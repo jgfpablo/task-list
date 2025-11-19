@@ -1,0 +1,46 @@
+<table class="min-w-full border border-gray-300 rounded-md shadow-sm">
+  <thead class="bg-gray-100 text-gray-700">
+    <tr>
+      <th class="px-4 py-2 text-left border-b">#</th>
+      <th class="px-4 py-2 text-left border-b">Title</th>
+      <th class="px-4 py-2 text-left border-b">Description</th>
+      <th class="px-4 py-2 text-left border-b">Date</th>
+      <th class="px-4 py-2 text-left border-b">time remaining</th>
+      <th class="px-4 py-2 text-left border-b">Priority</th>
+      <th class="px-4 py-2 text-left border-b">Completed</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for ( item of tasks; track item.id) {
+    <tr class="hover:bg-gray-50">
+      <td class="px-4 py-2 border-b">{{ item.id }}</td>
+      <td class="px-4 py-2 border-b font-semibold">{{ item.title }}</td>
+      <td class="px-4 py-2 border-b">{{ item.description }}</td>
+      <td class="px-4 py-2 border-b">{{ item.dueDate | date : "short" }}</td>
+      <td class="px-4 py-2 border-b">{{ getRemainingTime(item.dueDate!) }}</td>
+      <td class="px-4 py-2 border-b">
+        <span
+          (click)="changePriority(item)"
+          [ngClass]="{
+            'text-red-600 font-bold': item.priority === 'high',
+            'text-yellow-600': item.priority === 'medium',
+            'text-green-600': item.priority === 'low'
+          }"
+          >{{ item.priority }}</span
+        >
+        <span class="pt-2"><input type="checkbox" [(ngModel)]="locked" /></span>
+      </td>
+      <td class="px-4 py-2 border-b">
+        <span
+          (click)="markAsCompleted(item.id)"
+          [ngClass]="{
+            'text-green-600 font-semibold': item.completed,
+            'text-gray-500 italic': !item.completed
+          }"
+          >{{ item.completed ? "Yes" : "No" }}</span
+        >
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
