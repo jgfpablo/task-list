@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Tasks } from '../../Interfaces/tasks';
-import { Observable, of } from 'rxjs';
+import { interval, map, Observable, of, startWith } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private task: Tasks[] = [];
+  private tasks: Tasks[] = [];
 
   constructor() {
-    this.task = [
+    this.tasks = [
       {
         id: 1,
         title: 'Aprender Angular',
@@ -37,28 +37,49 @@ export class TaskService {
     ];
   }
 
-  getTasks(): Observable<Tasks[]> {
-    return of(this.task);
+  getTasks(): Observable<(Tasks & { remaining: string })[]> {
+    return interval(1000).pipe(
+      startWith(0),
+      map(() =>
+        this.tasks.map((task) => ({
+          ...task,
+          remaining: this.getRemainingTime(task.dueDate!),
+        }))
+      )
+    );
+  }
+
+  getRemainingTime(date: Date): string {
+    const diff = date.getTime() - Date.now();
+
+    if (diff <= 0) return 'expired';
+
+    const minutes = Math.floor(diff / 60000) % 60;
+    const hours = Math.floor(diff / 3600000) % 24;
+    const days = Math.floor(diff / 86400000);
+    const seconds = Math.floor(diff / 1000) % 60;
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
   addTask(task: Tasks) {
-    task.id = this.task.length + 1;
-    this.task.push(task);
+    task.id = this.tasks.length + 1;
+    this.tasks.push(task);
   }
 
   deleteTask(task: Tasks) {
-    this.task = this.task.filter((t) => t.id !== task.id);
+    this.tasks = this.tasks.filter((t) => t.id !== task.id);
   }
 
   markAsCompleted(id: number) {
-    const task = this.task.find((t) => t.id === id);
+    const task = this.tasks.find((t) => t.id === id);
     if (task) {
       task.completed = !task.completed;
     }
   }
 
   switchPriority(task: Tasks) {
-    let taskToChange = this.task.find((t) => t.id === task.id);
+    let taskToChange = this.tasks.find((t) => t.id === task.id);
 
     const PRIORITIES: Array<Tasks['priority']> = ['low', 'medium', 'high'];
     const currentPriority = PRIORITIES.indexOf(task.priority);

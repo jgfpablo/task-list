@@ -17,7 +17,7 @@
       <td class="px-4 py-2 border-b font-semibold">{{ item.title }}</td>
       <td class="px-4 py-2 border-b">{{ item.description }}</td>
       <td class="px-4 py-2 border-b">{{ item.dueDate | date : "short" }}</td>
-      <td class="px-4 py-2 border-b">{{ getRemainingTime(item.dueDate!) }}</td>
+      <td class="px-4 py-2 border-b">{{ item.remaining }}</td>
       <td class="px-4 py-2 border-b">
         <span
           (click)="changePriority(item)"
