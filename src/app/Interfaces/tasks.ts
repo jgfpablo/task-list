@@ -6,3 +6,7 @@ export interface Tasks {
   dueDate?: Date;
   priority: 'low' | 'medium' | 'high';
 }
+
+export type TaskPriority = Tasks['priority'];
+
+export type NewTask = Omit<Tasks, 'id' | 'completed'>;

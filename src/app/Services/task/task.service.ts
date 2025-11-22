@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Tasks } from '../../Interfaces/tasks';
+import { NewTask, Tasks } from '../../Interfaces/tasks';
 import { interval, map, Observable, of, startWith } from 'rxjs';
 
 @Injectable({
@@ -62,9 +62,15 @@ export class TaskService {
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
-  addTask(task: Tasks) {
-    task.id = this.tasks.length + 1;
-    this.tasks.push(task);
+  addTask(task: NewTask) {
+    console.log(task);
+    const newTask: Tasks = {
+      id: this.tasks.length + 1,
+      completed: false,
+      ...task,
+    };
+
+    this.tasks.push(newTask);
   }
 
   deleteTask(task: Tasks) {

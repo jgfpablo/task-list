@@ -3,6 +3,7 @@ import { Tasks } from '../Interfaces/tasks';
 import { TaskService } from '../Services/task/task.service';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { showTaskForm } from '../helpers/tasklist/newTask';
 
 @Component({
   selector: 'app-task-list',
@@ -18,7 +19,7 @@ export class TaskListComponent {
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-    // this.taskService.getTasks().subscribe((tasks) => (this.tasks = tasks));
+    this.taskService.getTasks().subscribe((tasks) => (this.tasks = tasks));
   }
 
   markAsCompleted(id: number) {
@@ -27,5 +28,10 @@ export class TaskListComponent {
 
   changePriority(task: Tasks) {
     this.taskService.switchPriority(task);
+  }
+
+  async openNewTask() {
+    let newTask = await showTaskForm();
+    this.taskService.addTask(newTask);
   }
 }
